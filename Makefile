@@ -3,13 +3,13 @@ CXX = g++
 CXXFLAGS = -Wall -std=c++11
 
 # Executable
-EXEC = parser
+EXEC = a.out
 
 # Source files
-SRC = parser.cc lexer.cc inputbuf.cc
+SRC = parser.cc symbolTable.cc lexer.cc inputbuf.cc
 
 # Header files
-HEADERS = parser.h lexer.h inputbuf.h
+HEADERS = parser.h symbolTable.h lexer.h inputbuf.h
 
 # Object files
 OBJ = $(SRC:.cc=.o)

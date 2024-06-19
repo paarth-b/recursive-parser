@@ -15,6 +15,10 @@ void LexicalAnalyzer::skipWhitespaceAndComments() {
     while (!input.EndOfInput()) {
         input.GetChar(currentChar);
 
+        if(input.EndOfInput()) {
+            break;
+        }
+
         if (isspace(currentChar)) {
             continue;
         } else if (currentChar == '/') {
@@ -40,6 +44,7 @@ Token LexicalAnalyzer::createToken(TokenType type, const std::string &lexeme) {
     Token tkn;
     tkn.token_type = type;
     tkn.lexeme = lexeme;
+    //printf("Creating token: %s\n", lexeme.c_str());
     tokens.push_back(tkn);
     return tkn;
 }
@@ -48,12 +53,11 @@ Token LexicalAnalyzer::GetToken() {
     skipWhitespaceAndComments();
 
     char currentChar;
-    if (input.EndOfInput()) {
-        return createToken(END_OF_FILE, "");
-    }
+    // if (input.EndOfInput()) {
+    //     return createToken(END_OF_FILE, "");
+    // }
 
     input.GetChar(currentChar);
-    printf("currentChar: %c\n", currentChar);
 
     if (isalpha(currentChar)) {
         std::string lexeme;
