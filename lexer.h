@@ -37,7 +37,9 @@ class Token {
 class LexicalAnalyzer {
   public:
     Token GetToken();
+    int GetSize();
     Token UngetToken(Token token);
+    Token CheckHeadToken();
     LexicalAnalyzer(InputBuffer &input);
 
   private:

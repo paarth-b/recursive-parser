@@ -40,11 +40,22 @@ void LexicalAnalyzer::skipWhitespaceAndComments() {
     }
 }
 
+Token LexicalAnalyzer::CheckHeadToken() {
+    Token t;
+    if (!tokens.empty()) {
+        t = tokens.back();
+    }
+    return t;
+}
+
+int LexicalAnalyzer::GetSize() {
+    return tokens.size();
+}
+
 Token LexicalAnalyzer::createToken(TokenType type, const std::string &lexeme) {
     Token tkn;
     tkn.token_type = type;
     tkn.lexeme = lexeme;
-    //printf("Creating token: %s\n", lexeme.c_str());
     tokens.push_back(tkn);
     return tkn;
 }
@@ -53,9 +64,6 @@ Token LexicalAnalyzer::GetToken() {
     skipWhitespaceAndComments();
 
     char currentChar;
-    // if (input.EndOfInput()) {
-    //     return createToken(END_OF_FILE, "");
-    // }
 
     input.GetChar(currentChar);
 

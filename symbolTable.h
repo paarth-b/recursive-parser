@@ -26,17 +26,6 @@
             if ID find in global,
                 cout "scope" + "id"
         else cout "?" + . + "id"
-     
-    Ex: 
-    init symbolTable (global default)
-    global (a, public); (b, public); (c, public)
-        enter scope TEST
-        test (a, public); (b, public); (hello, public); (x, private); (y, private)
-     enter statement_list
-        get an ID -> Lookup()
-        get EQUAL -> cout " = "
-        get ID -> Lookup()
-        get SemiColon (exit statement)
 */
 
 #ifndef __SYMBOL_TABLE__H__

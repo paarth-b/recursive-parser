@@ -1,0 +1,22 @@
+xyz, rst, tmp, abc;
+
+hello {
+  public: xyz, rst;
+  private: tmp;
+
+  world1 {
+    public: xyz, tmp;
+    private: rty, qwe;
+    xyz = rst;
+    tmp = abc;
+    Tim {
+      private: poi;
+      rty = poi;
+    }
+  }
+  xyz = abc;
+  world2 {
+    xyz = rst;
+    tmp = abc;
+  }
+}

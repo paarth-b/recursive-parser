@@ -21,7 +21,6 @@ void SymbolTable::exitScope() {
 }
 
 void SymbolTable::addSymbol(const std::string& scope, const std::string& id, bool isPublic) {
-    // printf("Adding symbol %s to scope %s\n", id.c_str(), scope.c_str());
     scopeStack.back().symbols.push_back({id, isPublic});
 }
 
@@ -37,10 +36,6 @@ void SymbolTable::lookup(const std::string& id) {
             }
         }
     }
-    // if (scopeStack[0].symbols.size() == 0) {
-    //     std::cout << "Syntax Error" << std::endl;
-    //     exit(0);
-    // }
     for (const auto& symbol : scopeStack[0].symbols) {
         if (symbol.first == id) {
             std::cout << "::" << id;

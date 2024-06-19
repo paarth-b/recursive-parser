@@ -6,9 +6,7 @@
 #include <sstream>
 #include <map>
 
-Parser::Parser(LexicalAnalyzer& lex, SymbolTable& sym) : lexer(lex), symbolTable(sym) {
-    // nextToken();
-}
+Parser::Parser(LexicalAnalyzer& lex, SymbolTable& sym) : lexer(lex), symbolTable(sym) {}
 
 void Parser::syntax_error() {
     std::cout << "Syntax Error\n";
@@ -20,26 +18,22 @@ void Parser::Parse() {
 }
 
 void Parser::parse_program() {
-    // std::cout << "parse_program started" << std::endl;
     parse_global_vars();
     parse_scope();
-    // std::cout << "parse_program ended" << std::endl;
 }
 
-void Parser::parse_global_vars() { // DONE : No Symbol Table
-    // std::cout << "parse_global_vars started" << std::endl;
+void Parser::parse_global_vars() {
     Token global = lexer.GetToken();
     if (global.token_type == ID) {
         global = lexer.GetToken();
         if(global.token_type == LBRACE || global.token_type == EQUAL) {
             global = lexer.UngetToken(global);
-            global = lexer.UngetToken(global);
+            symbolTable.enterScope(lexer.CheckHeadToken().lexeme);
             return;
         }
         else if (global.token_type != COMMA && global.token_type != SEMICOLON) {
             syntax_error();
         }
-        // global = lexer.UngetToken(global);
 
         global = lexer.UngetToken(global);
         symbolTable.addSymbol(symbolTable.scopeStack.back().scopeName, global.lexeme, true);
@@ -53,12 +47,9 @@ void Parser::parse_global_vars() { // DONE : No Symbol Table
             syntax_error();
         }
     }
-    // std::cout << "parse_global_vars ended" << std::endl;
 }
 
-void Parser::parse_var_list(bool is_pub_list) { // DONE : No Symbol Table
-    // std::cout << "parsed_var started" << std::endl;
-    
+void Parser::parse_var_list(bool is_pub_list) {
     Token var_list = lexer.GetToken();
     var_list = lexer.GetToken();
     if(var_list.token_type == LBRACE || var_list.token_type == EQUAL) {
@@ -75,16 +66,18 @@ void Parser::parse_var_list(bool is_pub_list) { // DONE : No Symbol Table
     var_list = lexer.GetToken();
     if (var_list.token_type == COMMA) parse_var_list(is_pub_list);
     else var_list = lexer.UngetToken(var_list);
-    // std::cout << "parsed_var ended" << std::endl;
 }
 
 void Parser::parse_scope() {
-    // std::cout << "parse_scope started" << std::endl;
+    Token id_var;
+    if (lexer.GetSize() == 1){
+        id_var = lexer.CheckHeadToken();
+    }
+    else {
+        id_var = lexer.GetToken();
+        symbolTable.enterScope(id_var.lexeme);
+    }
 
-    Token id_var = lexer.GetToken();
-    symbolTable.enterScope(id_var.lexeme);
-
-    // std::cout << "id_var: " << id_var.lexeme << std::endl;
     if (id_var.token_type != ID) {
         syntax_error();
     }
@@ -96,7 +89,6 @@ void Parser::parse_scope() {
     parse_private_vars();
     parse_stmt_list();
     id_var = lexer.GetToken();
-    // std::cout << "this is my var: " << id_var.lexeme << std::endl;
     if (id_var.lexeme != "}") {
         syntax_error();
     }
@@ -105,7 +97,6 @@ void Parser::parse_scope() {
 
 void Parser::parse_public_vars() {
     Token parse = lexer.GetToken();
-    // std::cout << "parse token: " << parse.lexeme << std::endl;
     if (parse.token_type == PUBLIC) {
         if (lexer.GetToken().token_type != COLON) {
             syntax_error();
@@ -116,13 +107,11 @@ void Parser::parse_public_vars() {
         }
     } else {
         parse = lexer.UngetToken(parse);
-        // std::cout << "parse token: " << parse.lexeme << std::endl;
     }
 }
 
 void Parser::parse_private_vars() {
     Token parse = lexer.GetToken();
-    // std::cout << "parse token: " << parse.lexeme << std::endl;
     if (parse.token_type == PRIVATE) {
         if (lexer.GetToken().token_type != COLON) {
             syntax_error();
@@ -133,19 +122,15 @@ void Parser::parse_private_vars() {
         }
     } else {
         parse = lexer.UngetToken(parse);
-        // std::cout << "parse token: " << parse.lexeme << std::endl;
     }
 }
 
 void Parser::parse_stmt_list() {
     Token stmt_list = lexer.GetToken();
-    // std::cout << "stmt_list: " << stmt_list.lexeme << std::endl;
     
     if (stmt_list.token_type == RBRACE)
     {
-        // std::cout << "rbrace found" << std::endl;
         stmt_list = lexer.UngetToken(stmt_list);
-        // std::cout << "stmt_list: " << stmt_list.lexeme << std::endl;
         return;
     } else if (stmt_list.token_type != ID) {
         syntax_error();
@@ -158,7 +143,6 @@ void Parser::parse_stmt_list() {
         parse_scope();
         parse_stmt_list();
     } else {
-        // Only goes back to starting stmt id, not before it
         stmt_list = lexer.UngetToken(stmt_list);
         check_semicolon();
 
@@ -166,9 +150,7 @@ void Parser::parse_stmt_list() {
         std :: cout << " = ";
         parse_stmt();
         parse_stmt_list();
-        // std::cout << "parsed stmt: " << stmt_list.lexeme << std::endl;
     }
-    // std::cout << "stmt_list ended" << std::endl;
 }
 
 void Parser::check_semicolon() { //edge case
@@ -184,7 +166,6 @@ void Parser::check_semicolon() { //edge case
 }
 
 void Parser::parse_stmt() {
-    // std::cout << "parse_stmt started" << std::endl;
     Token stmt = lexer.GetToken();
     if (stmt.token_type != EQUAL) {
         syntax_error();
@@ -192,7 +173,6 @@ void Parser::parse_stmt() {
     stmt = lexer.GetToken();
     symbolTable.lookup(stmt.lexeme);
     std::cout << std::endl;
-    // std::cout << "stmt token: " << stmt.lexeme << std::endl;
     if (stmt.token_type != ID) {
         syntax_error();
     }   
@@ -203,21 +183,9 @@ void Parser::parse_stmt() {
 }
 
 int main(int argc, char *argv[]) {
-    // if (argc != 2) {
-    //     std::cerr << "Usage: " << argv[0] << " <input-file>" << std::endl;
-    //     return 1;
-    // }
-
-    // std::ifstream file(argv[1]);
-    // if (!file.is_open()) {
-    //     std::cerr << "Error: could not open file " << argv[1] << std::endl;
-    //     return 1;
-    // }
-
     std::stringstream buffer;
     buffer << std::cin.rdbuf();
     std::string content = buffer.str();
-    //file.close();
 
     InputBuffer inputBuffer;
     inputBuffer.UngetString(content);
