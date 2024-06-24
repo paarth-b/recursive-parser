@@ -15,6 +15,7 @@ void Parser::syntax_error() {
 
 void Parser::Parse() {
     parse_program();
+    symbolTable.printTable();
 }
 
 void Parser::parse_program() {
@@ -147,7 +148,6 @@ void Parser::parse_stmt_list() {
         check_semicolon();
 
         symbolTable.lookup(stmt_list.lexeme);
-        std :: cout << " = ";
         parse_stmt();
         parse_stmt_list();
     }
@@ -172,7 +172,6 @@ void Parser::parse_stmt() {
     }
     stmt = lexer.GetToken();
     symbolTable.lookup(stmt.lexeme);
-    std::cout << std::endl;
     if (stmt.token_type != ID) {
         syntax_error();
     }   

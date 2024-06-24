@@ -8,6 +8,16 @@
 #include <utility>
 #include <map>
 
+void SymbolTable::printTable() {
+    while (!printQueue.empty()) {
+        std::cout << printQueue.front() << " = "; // Print the front element
+        printQueue.pop(); // Remove the front element
+        std::cout << printQueue.front(); // Print the front element
+        printQueue.pop();
+        std::cout << std::endl;
+    }
+}
+
 void SymbolTable::enterScope(const std::string& scope) {
     scopeStack.push_back({ scope, {} });
 }
@@ -30,7 +40,8 @@ void SymbolTable::lookup(const std::string& id) {
         for (const auto& symbol : scope.symbols) {
             if (symbol.first == id) {
                 if (symbol.second == true || i == scopeStack.size() - 1) {
-                    std::cout << scope.scopeName << "." << id;
+                    //std::cout << scope.scopeName << "." << id;
+                    printQueue.push(scope.scopeName + "." + id);
                     return;
                 }
             }
@@ -38,9 +49,11 @@ void SymbolTable::lookup(const std::string& id) {
     }
     for (const auto& symbol : scopeStack[0].symbols) {
         if (symbol.first == id) {
-            std::cout << "::" << id;
+            //std::cout << "::" << id;
+            printQueue.push("::" + id);
             return;
         }
         }
-    std::cout << "?." << id;
+    //std::cout << "?." << id;
+    printQueue.push("?." + id);
 }

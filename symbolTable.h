@@ -33,6 +33,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <queue>
 #include <vector>
 #include <map>
 
@@ -49,7 +50,9 @@ public:
     SymbolTable() {
         scopeStack.push_back(globalScope);
     }
+    std::queue<std::string> printQueue;
 
+    void printTable();
     void enterScope(const std::string& scope);
     void exitScope();
     void addSymbol(const std::string& scope, const std::string& id, bool isPublic);
